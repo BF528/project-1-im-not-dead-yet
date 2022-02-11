@@ -46,4 +46,6 @@ nuse_medians <- ggplot(nuse_stats, aes(x=median)) +
 nuse_medians
 
 
+# correction for batch effects
+annotation_filepath = '/project/bf528/project_1/doc/proj_metadata.csv'
 
