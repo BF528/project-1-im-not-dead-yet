@@ -1,3 +1,7 @@
+if (!require("BiocManager", quietly = TRUE))
+  install.packages("BiocManager")
+BiocManager::install(version = "3.14")
+
 library(affy)
 library(affyPLM)
 library(sva)
@@ -14,11 +18,10 @@ fns <- list.celfiles(path=celpath, full.names=TRUE)
 celbatch <- ReadAffy(celfile.path=filepath)
 
 # normalize files together
-rma(celbatch)
+rma <- rma(celbatch)
 
 # convert AffyBatch to PLMset
 pset <- fitPLM(celbatch, normalize = TRUE, background = TRUE)
-
 
 # relative log expression (RLE)
 rle_stats <- data.frame(t(affyPLM::RLE(pset, type='stats')))
@@ -31,7 +34,6 @@ rle_medians <- ggplot(rle_stats, aes(x=median)) +
   labs(title = 'RLE Medians') +
   theme_classic()
 rle_medians
-
 
 # normalized unscaled standard errors (NUSE)
 nuse_stats <- data.frame(t(NUSE(pset, type = 'stats')))
@@ -47,5 +49,13 @@ nuse_medians
 
 
 # correction for batch effects
-annotation_filepath = '/project/bf528/project_1/doc/proj_metadata.csv'
+                
+annotation_csv <- read.csv(file = '/project/bf528/project_1/doc/proj_metadata.csv')
+
+edata <- exprs(rma)
+batch <- annotation_csv$normalizationcombatbatch
+
+modcombat <- model.matrix(~as.factor(normalizationcombatmod), data = annotation_csv)
+
+combat_edata = ComBat(dat = edata, batch = batch, mod = modcombat)
 
