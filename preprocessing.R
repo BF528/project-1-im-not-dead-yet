@@ -9,7 +9,7 @@ library(AnnotationDbi)
 library(hgu133plus2.db)
 library(ggplot2)
 
-filepath = '/project/bf528/project_1/data/GSE39582/CEL_files'
+filepath = '/projectnb/bf528/users/im_not_dead_yet/project_1/samples'
 
 celpath <- system.file('celfiles', package='affydata')
 fns <- list.celfiles(path=celpath, full.names=TRUE)
