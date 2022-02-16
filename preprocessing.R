@@ -8,8 +8,11 @@ library(sva)
 library(AnnotationDbi)
 library(hgu133plus2.db)
 library(ggplot2)
-library(ggfortify)
 library(dplyr)
+
+# R runtime
+ptm <- proc.time()
+
 
 filepath = '/projectnb/bf528/users/im_not_dead_yet/project_1/samples'
 
@@ -35,7 +38,6 @@ rle_medians <- ggplot(rle_stats, aes(x=median)) +
                  fill = 'dodgerblue3') +
   labs(title = 'RLE Medians') +
   theme_classic()
-rle_medians
 
 # normalized unscaled standard errors (NUSE)
 nuse_stats <- data.frame(t(NUSE(pset, type = 'stats')))
@@ -47,8 +49,6 @@ nuse_medians <- ggplot(nuse_stats, aes(x=median)) +
                  fill = 'dodgerblue3') +
   labs(title = 'NUSE Medians') +
   theme_classic()
-nuse_medians
-
 
 # correction for batch effects
                 
@@ -70,6 +70,9 @@ scaled_edata <- scale(trans_edata, center = TRUE, scale = TRUE)
 # retranspose
 scaled_edata <- t(scaled_edata)
 
+# write edata to csv
+write.csv(scaled_edata, file = 'edata.csv')
+
 # perform pca
 pca <- prcomp(scaled_edata, center = FALSE, scale = FALSE)
 
@@ -86,4 +89,7 @@ pca_plot <- pca$rotation %>%
        y = paste0('PC2: ', round(var_explained[2]*100, 2), '%'),
        title = 'PC1 vs PC2')
 
-pca_plot
+
+# R runtime stop
+runtime <- proc.time() - ptm
+runtime
