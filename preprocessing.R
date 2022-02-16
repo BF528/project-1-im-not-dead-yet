@@ -29,8 +29,8 @@ rle_stats <- data.frame(t(affyPLM::RLE(pset, type='stats')))
 # plot rle_stats
 rle_medians <- ggplot(rle_stats, aes(x=median)) + 
   geom_histogram(bins=50, 
-                 color = 'dodgerblue4', 
-                 fill = 'white') +
+                 color = 'black', 
+                 fill = 'dodgerblue3') +
   labs(title = 'RLE Medians') +
   theme_classic()
 rle_medians
@@ -41,8 +41,8 @@ nuse_stats <- data.frame(t(NUSE(pset, type = 'stats')))
 # plot nuse_stats
 nuse_medians <- ggplot(nuse_stats, aes(x=median)) + 
   geom_histogram(bins=50, 
-                 color = 'dodgerblue4', 
-                 fill = 'white') +
+                 color = 'black', 
+                 fill = 'dodgerblue3') +
   labs(title = 'NUSE Medians') +
   theme_classic()
 nuse_medians
@@ -59,3 +59,30 @@ modcombat <- model.matrix(~as.factor(normalizationcombatmod), data = annotation_
 
 combat_edata = ComBat(dat = edata, batch = batch, mod = modcombat)
 
+# transpose before pca
+trans_edata <- t(combat_edata)
+
+# scale and center
+scaled_edata <- scale(trans_edata, center = TRUE, scale = TRUE)
+
+# retranspose
+scaled_edata <- t(scaled_edata)
+
+# perform pca
+pca <- prcomp(scaled_edata, scale = FALSE)
+
+# pull variance explained
+var_explained <- pca$sdev^2 / sum(pca$sdev^2)
+var_explained[1:5]
+
+# plot pca
+
+pca_plot <- pca$x %>%
+  as.data.frame %>%
+  ggplot(aes(x = PC1, y = PC2)) + geom_point(size = 0.5) +
+  theme_bw() +
+  labs(x = paste0('PC1: ', round(var_explained[1]*100, 2), '%'),
+       y = paste0('PC2: ', round(var_explained[2]*100, 2), '%'),
+       title = 'PC1 vs PC2')
+
+pca_plot
