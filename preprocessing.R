@@ -8,6 +8,7 @@ library(sva)
 library(AnnotationDbi)
 library(hgu133plus2.db)
 library(ggplot2)
+library(ggfortify)
 library(dplyr)
 
 # R runtime
@@ -61,6 +62,9 @@ modcombat <- model.matrix(~as.factor(normalizationcombatmod), data = annotation_
 
 combat_edata = ComBat(dat = edata, batch = batch, mod = modcombat)
 
+# write edata to csv
+write.csv(combat_edata, file = 'edata.csv')
+
 # transpose before pca
 trans_edata <- t(combat_edata)
 
@@ -70,8 +74,6 @@ scaled_edata <- scale(trans_edata, center = TRUE, scale = TRUE)
 # retranspose
 scaled_edata <- t(scaled_edata)
 
-# write edata to csv
-write.csv(scaled_edata, file = 'edata.csv')
 
 # perform pca
 pca <- prcomp(scaled_edata, center = FALSE, scale = FALSE)
