@@ -8,6 +8,8 @@ library(sva)
 library(AnnotationDbi)
 library(hgu133plus2.db)
 library(ggplot2)
+library(ggfortify)
+library(dplyr)
 
 filepath = '/projectnb/bf528/users/im_not_dead_yet/project_1/samples'
 
@@ -69,17 +71,16 @@ scaled_edata <- scale(trans_edata, center = TRUE, scale = TRUE)
 scaled_edata <- t(scaled_edata)
 
 # perform pca
-pca <- prcomp(scaled_edata, scale = FALSE)
+pca <- prcomp(scaled_edata, center = FALSE, scale = FALSE)
 
 # pull variance explained
 var_explained <- pca$sdev^2 / sum(pca$sdev^2)
 var_explained[1:5]
 
 # plot pca
-
-pca_plot <- pca$x %>%
-  as.data.frame %>%
-  ggplot(aes(x = PC1, y = PC2)) + geom_point(size = 0.5) +
+pca_plot <- pca$rotation %>%
+  ggplot(aes(x = PC1, y = PC2)) + 
+  geom_point(size = 0.5) +
   theme_bw() +
   labs(x = paste0('PC1: ', round(var_explained[1]*100, 2), '%'),
        y = paste0('PC2: ', round(var_explained[2]*100, 2), '%'),
