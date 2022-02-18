@@ -1,3 +1,9 @@
+#################
+# Project 1
+# Data Preprocessing and Quality Control
+# Author: Jason Yeung
+#################
+
 if (!require("BiocManager", quietly = TRUE))
   install.packages("BiocManager")
 BiocManager::install(version = "3.14")
@@ -10,6 +16,10 @@ library(hgu133plus2.db)
 library(ggplot2)
 library(ggfortify)
 library(dplyr)
+
+# R runtime
+ptm <- proc.time()
+
 
 filepath = '/projectnb/bf528/users/im_not_dead_yet/project_1/samples'
 
@@ -35,7 +45,6 @@ rle_medians <- ggplot(rle_stats, aes(x=median)) +
                  fill = 'dodgerblue3') +
   labs(title = 'RLE Medians') +
   theme_classic()
-rle_medians
 
 # normalized unscaled standard errors (NUSE)
 nuse_stats <- data.frame(t(NUSE(pset, type = 'stats')))
@@ -47,8 +56,6 @@ nuse_medians <- ggplot(nuse_stats, aes(x=median)) +
                  fill = 'dodgerblue3') +
   labs(title = 'NUSE Medians') +
   theme_classic()
-nuse_medians
-
 
 # correction for batch effects
                 
@@ -61,6 +68,9 @@ modcombat <- model.matrix(~as.factor(normalizationcombatmod), data = annotation_
 
 combat_edata = ComBat(dat = edata, batch = batch, mod = modcombat)
 
+# write combat_edata to csv
+write.csv(combat_edata, file = '/projectnb/bf528/users/im_not_dead_yet/project_1/edata.csv')
+
 # transpose before pca
 trans_edata <- t(combat_edata)
 
@@ -69,6 +79,7 @@ scaled_edata <- scale(trans_edata, center = TRUE, scale = TRUE)
 
 # retranspose
 scaled_edata <- t(scaled_edata)
+
 
 # perform pca
 pca <- prcomp(scaled_edata, center = FALSE, scale = FALSE)
@@ -86,4 +97,7 @@ pca_plot <- pca$rotation %>%
        y = paste0('PC2: ', round(var_explained[2]*100, 2), '%'),
        title = 'PC1 vs PC2')
 
-pca_plot
+
+# R runtime stop
+runtime <- proc.time() - ptm
+runtime
