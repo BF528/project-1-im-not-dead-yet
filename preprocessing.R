@@ -1,3 +1,9 @@
+#################
+# Project 1
+# Data Preprocessing and Quality Control
+# Author: Jason Yeung
+#################
+
 if (!require("BiocManager", quietly = TRUE))
   install.packages("BiocManager")
 BiocManager::install(version = "3.14")
@@ -62,8 +68,8 @@ modcombat <- model.matrix(~as.factor(normalizationcombatmod), data = annotation_
 
 combat_edata = ComBat(dat = edata, batch = batch, mod = modcombat)
 
-# write edata to csv
-write.csv(combat_edata, file = 'edata.csv')
+# write combat_edata to csv
+write.csv(combat_edata, file = '/projectnb/bf528/users/im_not_dead_yet/project_1/edata.csv')
 
 # transpose before pca
 trans_edata <- t(combat_edata)

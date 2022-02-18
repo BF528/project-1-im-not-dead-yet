@@ -1,11 +1,21 @@
 # Project Description
 
-A brief description of what this repository is for and what it contains
+This project conducts and reproduces analyses presented in Marisa et al. Gene Expression
+Classification of Colon Cancer into Molecular Subtypes: Characterization, Validation, and Prognostic
+Value. PLoS Medicine, May 2013. Data processing and analysis was performed on the BU Shared Computing Cluster 
+using R version 4.1.2.
 
 # Contributors
 
-List contributor names and github user names, or email addresses if desired
+Data Curator: Urvy Mudgal
+Programmer: Jason Yeung
+Analyst: Manas Dhanuka
 
 # Repository Contents
 
-Provide a brief description of each script/code file in this repo, what it does, and how to execute it
+preprocessing.R
+*Data preprocessing and quality control
+*Normalization
+*RLE/NUSE
+*Batch effect correction
+*PCA
